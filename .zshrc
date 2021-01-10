@@ -100,6 +100,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias generate-c++="cp /media/gs18113/Drive/GSHS/C_Programming/base.cpp"
+alias copy="xclip -selection clipboard"
 
 function gdrive_download () {
   CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$1" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
@@ -107,21 +108,13 @@ function gdrive_download () {
   rm -rf /tmp/cookies.txt
 }
 
+function scan_doc () {
+	scanimage --resolution 300 --format=png --batch=document-p%d.png && convert document-p*.png $1 && rm document-p*.png
+}
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/gs18113/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/gs18113/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/gs18113/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/gs18113/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+function scan_doc_prompt () {
+	scanimage --resolution 300 --format=png --batch=document-p%d.png --batch-prompt && convert document-p*.png $1 && rm document-p*.png
+}
 
 bindkey '^K' autosuggest-accept
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
@@ -145,3 +138,7 @@ POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX=$'%K{10}%F{black} \uf155 %f%F{10}%k\ue
 
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(user dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time anaconda time ram)
+
+d=.dircolors
+test -r $d && eval "$(dircolors $d)"
+
